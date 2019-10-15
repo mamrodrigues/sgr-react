@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import './css/pure-min.css';
 import './css/side-menu.css';
-import $ from 'jquery'
+import $ from 'jquery';
+import InputCustomizado from './componentes/InputCustomizado';
 
 class App extends Component {
 
@@ -92,18 +93,10 @@ componentDidMount(){
               <div className="content" id="content">
                 <div className="pure-form pure-form-aligned">
                   <form className="pure-form pure-form-aligned" onSubmit={this.cadastrar} method="post">
-                    <div className="pure-control-group">
-                      <label htmlFor="nome">Nome</label>
-                      <input id="nome" type="text" name="nome" value={this.state.nome} onChange={this.setNome} />
-                    </div>
-                    <div className="pure-control-group">
-                      <label htmlFor="descricao">Descrição</label>
-                      <input id="descricao" type="text" name="descricao" value={this.state.descricao} onChange={this.setDescricao} />
-                    </div>
-                    <div className="pure-control-group">
-                      <label htmlFor="valor">Valor</label>
-                      <input id="valor" type="text" name="valor" value={this.state.valor} onChange={this.setValor} />
-                    </div>
+
+                    <InputCustomizado id="nome" type="text" name="nome" value={this.state.nome} onChange={this.setNome} label="Nome"/>
+                    <InputCustomizado id="descricao" type="text" name="descricao" value={this.state.descricao} onChange={this.setDescricao} label="Descrição"/>
+                    <InputCustomizado id="valor" type="text" name="valor" value={this.state.valor} onChange={this.setValor} label="Valor"/>                                            
 
                     <div className="pure-control-group">
                       <label></label>
