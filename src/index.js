@@ -7,6 +7,9 @@ import * as serviceWorker from './serviceWorker';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import ProdutoBox from './produto/ProdutoBox';
+import FuncionarioBox from './funcionario/FuncionarioBox';
+import EnderecoBox from './endereco/EnderecoBox';
+
 import Home from './home/Home';
 
 ReactDOM.render(
@@ -16,7 +19,8 @@ ReactDOM.render(
         <Route path="/">
           <Route exact path="/" component={Home}/>
           <Route path="/estabelecimentos"/>
-          <Route path="/funcionarios"/>
+          <Route path="/funcionarios" component={FuncionarioBox}/>
+          <Route path="/enderecos" component={EnderecoBox}/>
           <Route path="/cardapios"/>
           <Route path="/comandas"/>
           <Route path="/produtos" component={ProdutoBox}/>
