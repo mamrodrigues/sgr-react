@@ -18,7 +18,11 @@ export default class FuncionarioBox extends Component {
         </div>
 
         <FuncionarioCadastro/>
-        <FuncionarioLista funcionarios={this.state.funcionarios}/>
+        {
+          (typeof this.state.funcionarios !== 'undefined' && this.state.funcionarios.length != 0) ? <FuncionarioLista funcionarios={this.state.funcionarios}/> : null
+        }
+
+
       </div>
     );
   }

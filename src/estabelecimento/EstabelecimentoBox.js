@@ -18,7 +18,10 @@ export default class EstabelecimentoBox extends Component {
         </div>
 
         <EstabelecimentoCadastro/>
-        <EstabelecimentoLista estabelecimentos={this.state.estabelecimentos}/>
+        {
+          (typeof this.state.estabelecimentos !== 'undefined' && this.state.estabelecimentos.length != 0) ? <EstabelecimentoLista estabelecimentos={this.state.estabelecimentos}/> : null
+        }
+
       </div>
     );
   }

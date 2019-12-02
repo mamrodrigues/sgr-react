@@ -21,8 +21,8 @@ class App extends Component {
                   <Link className="pure-menu-heading" to="/">SGR</Link>
 
                   <ul className="pure-menu-list">
-                      <li className="pure-menu-item"><Link to="/estabelecimentos" className="pure-menu-link">Estabelecimentos</Link></li>
                       <li className="pure-menu-item"><Link to="/enderecos" className="pure-menu-link">Endereços</Link></li>
+                      <li className="pure-menu-item"><Link to="/estabelecimentos" className="pure-menu-link">Estabelecimentos</Link></li>
                       <li className="pure-menu-item"><Link to="/funcionarios" className="pure-menu-link">Funcionários</Link></li>
                       <li className="pure-menu-item"><Link to="/cardapios" className="pure-menu-link">Cardápios</Link></li>
                       <li className="pure-menu-item"><Link to="/produtos" className="pure-menu-link">Produtos</Link></li>

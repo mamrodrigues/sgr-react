@@ -18,7 +18,10 @@ export default class EnderecoBox extends Component {
         </div>
 
         <EnderecoCadastro/>
-        <EnderecoLista enderecos={this.state.enderecos}/>
+        {
+          (typeof this.state.enderecos !== 'undefined' && this.state.enderecos.length != 0) ? <EnderecoLista enderecos={this.state.enderecos}/> : null
+        }
+
       </div>
     );
   }

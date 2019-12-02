@@ -3,16 +3,27 @@ import PubSub from 'pubsub-js';
 import $ from 'jquery';
 
 import InputCustomizado from '../componentes/InputCustomizado';
+import SelectCustomizado from '../componentes/SelectCustomizado';
 
 export default class ProdutoCadastro extends Component {
 
   constructor(){
     super();
-    this.state = {nome:'', descricao:'', valor:''};
+    this.state = {nome:'', descricao:'', valor:'', cardapios:[], cardapioId:''};
     this.cadastrar = this.cadastrar.bind(this);
     this.setNome = this.setNome.bind(this);
     this.setDescricao = this.setDescricao.bind(this);
     this.setValor = this.setValor.bind(this);
+    this.setCardapio = this.setCardapio.bind(this);
+
+    $.ajax({
+        url:"http://localhost:8080/sgr/cardapios",
+        dataType: 'json',
+        success:function(resposta){
+          this.setState({cardapios:resposta});
+        }.bind(this)
+      }
+    );
   }
 
   render(){
@@ -20,9 +31,26 @@ export default class ProdutoCadastro extends Component {
       <div className="pure-form pure-form-aligned">
         <form className="pure-form pure-form-aligned" onSubmit={this.cadastrar} method="post">
 
-          <InputCustomizado id="nome" type="text" name="nome" value={this.state.nome} onChange={this.setNome} label="Nome"/>
-          <InputCustomizado id="descricao" type="text" name="descricao" value={this.state.descricao} onChange={this.setDescricao} label="Descrição"/>
-          <InputCustomizado id="valor" type="text" name="valor" value={this.state.valor} onChange={this.setValor} label="Valor"/>
+          <InputCustomizado
+              id="nome" type="text" name="nome" value={this.state.nome} onChange={this.setNome} label="Nome"/>
+
+          <InputCustomizado
+              id="descricao" type="text" name="descricao" value={this.state.descricao} onChange={this.setDescricao} label="Descrição"/>
+
+          <InputCustomizado
+              id="valor" type="text" name="valor" value={this.state.valor} onChange={this.setValor} label="Valor"/>
+
+          <div className="pure-control-group">
+              <label htmlFor="cardapio">Cardápio</label>
+
+              <select name="cardapio" id="cardapio" onChange={this.setCardapio} >
+                  {
+                    this.state.cardapios.map(function(object){
+                        return <option value={object.cardapioId}>{object.nome}</option>
+                    })
+                  }
+              </select>
+          </div>
 
           <div className="pure-control-group">
             <label></label>
@@ -37,12 +65,24 @@ export default class ProdutoCadastro extends Component {
   cadastrar(syntheticEvent){
     syntheticEvent.preventDefault();
 
+    if(this.state.cardapioId == ''){
+      this.state.cardapioId = this.state.cardapios[0].cardapioId;
+    }
+
     $.ajax({
         url:"http://localhost:8080/sgr/produtos",
         dataType: 'json',
         contentType: "application/json; charset=utf-8",
         type: 'post',
-        data: JSON.stringify({nome:this.state.nome, descricao:this.state.descricao, valor:this.state.valor}),
+        data: JSON.stringify(
+          {
+            nome:this.state.nome,
+            descricao:this.state.descricao,
+            valor:this.state.valor,
+            cardapio:{
+              cardapioId: this.state.cardapioId
+            }
+          }),
         success:function(resposta){
           this.setState({nome:'', descricao:'', valor:''});
           PubSub.publish('produto-lista');
@@ -64,6 +104,12 @@ export default class ProdutoCadastro extends Component {
 
   setValor(evento){
     this.setState({valor:evento.target.value});
+  }
+
+  setCardapio(evento){
+    this.setState({ cardapioId: evento.target.value }, () => {
+      console.log('cardapioId', this.state.cardapioId);
+    });
   }
 
 }

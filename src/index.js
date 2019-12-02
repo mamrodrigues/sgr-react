@@ -11,6 +11,8 @@ import CardapioBox from './cardapio/CardapioBox';
 import FuncionarioBox from './funcionario/FuncionarioBox';
 import EnderecoBox from './endereco/EnderecoBox';
 import EstabelecimentoBox from './estabelecimento/EstabelecimentoBox';
+import ComandaBox from './comanda/ComandaBox';
+import PedidoBox from './pedido/PedidoBox';
 
 import Home from './home/Home';
 
@@ -25,7 +27,8 @@ ReactDOM.render(
           <Route path="/enderecos" component={EnderecoBox}/>
           <Route path="/cardapios" component={CardapioBox}/>
           <Route path="/produtos" component={ProdutoBox}/>
-          <Route path="/comandas"/>
+          <Route path="/produtosPorComanda/:comandaId" component={PedidoBox}/>
+          <Route path="/comandas" component={ComandaBox}/>
         </Route>
       </Switch>
     </App>

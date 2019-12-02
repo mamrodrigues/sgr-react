@@ -18,7 +18,10 @@ export default class CardapioBox extends Component {
         </div>
 
         <CardapioCadastro/>
-        <CardapioLista cardapios={this.state.cardapios}/>
+        {
+          (typeof this.state.cardapios !== 'undefined' && this.state.cardapios.length != 0) ? <CardapioLista cardapios={this.state.cardapios}/> : null
+        }
+
       </div>
     );
   }
