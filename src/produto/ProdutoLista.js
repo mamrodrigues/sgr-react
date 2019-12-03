@@ -17,6 +17,7 @@ export default class ProdutoLista extends Component {
               <th>Nome</th>
               <th>Descrição</th>
               <th>Valor</th>
+              <th> </th>
             </tr>
           </thead>
           <tbody>
@@ -27,14 +28,19 @@ export default class ProdutoLista extends Component {
                     <td>{produto.nome}</td>
                     <td>{produto.descricao}</td>
                     <td>{produto.valor}</td>
+                    <td><button onClick={(e) => this.atualizarProduto(produto)} className="pure-button pure-button-primary">Editar</button></td>
                   </tr>
                 );
-              })
+              }.bind(this))
             }
           </tbody>
         </table>
       </div>
     );
+  }
+
+  atualizarProduto(produto){
+    PubSub.publish('produto-editar', produto);
   }
 
 }

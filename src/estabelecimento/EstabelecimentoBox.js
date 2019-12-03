@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import EstabelecimentoCadastro from './EstabelecimentoCadastro';
+import ErroCustomizado from '../componentes/ErroCustomizado';
 import EstabelecimentoLista from './EstabelecimentoLista';
 import PubSub from 'pubsub-js';
 import $ from 'jquery';

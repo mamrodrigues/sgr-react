@@ -17,6 +17,7 @@ export default class FuncionarioLista extends Component {
               <th>Nome</th>
               <th>CPF</th>
               <th>Data de Nascimento</th>
+              <th>     </th>
             </tr>
           </thead>
           <tbody>
@@ -27,14 +28,19 @@ export default class FuncionarioLista extends Component {
                     <td>{funcionario.nome}</td>
                     <td>{funcionario.cpf}</td>
                     <td>{funcionario.dataNascimento}</td>
+                    <td><button onClick={(e) => this.atualizarFuncionario(funcionario)} className="pure-button pure-button-primary">Editar</button></td>
                   </tr>
                 );
-              })
+              }.bind(this))
             }
           </tbody>
         </table>
       </div>
     );
+  }
+
+  atualizarFuncionario(funcionario){
+    PubSub.publish('funcionario-editar', funcionario);
   }
 
 }

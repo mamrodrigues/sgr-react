@@ -10,6 +10,7 @@ class App extends Component {
   }
 
   render(){
+    //<li className="pure-menu-item"><Link to="/enderecos" className="pure-menu-link">Endereços</Link></li>
     return (
       <div id="layout">
           <a href="#menu" id="menuLink" className="menu-link">
@@ -21,7 +22,6 @@ class App extends Component {
                   <Link className="pure-menu-heading" to="/">SGR</Link>
 
                   <ul className="pure-menu-list">
-                      <li className="pure-menu-item"><Link to="/enderecos" className="pure-menu-link">Endereços</Link></li>
                       <li className="pure-menu-item"><Link to="/estabelecimentos" className="pure-menu-link">Estabelecimentos</Link></li>
                       <li className="pure-menu-item"><Link to="/funcionarios" className="pure-menu-link">Funcionários</Link></li>
                       <li className="pure-menu-item"><Link to="/cardapios" className="pure-menu-link">Cardápios</Link></li>

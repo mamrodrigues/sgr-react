@@ -16,6 +16,7 @@ export default class CardapioLista extends Component {
             <tr>
               <th>Nome</th>
               <th>Descrição</th>
+              <th> </th>
             </tr>
           </thead>
           <tbody>
@@ -25,14 +26,19 @@ export default class CardapioLista extends Component {
                   <tr>
                     <td>{cardapio.nome}</td>
                     <td>{cardapio.descricao}</td>
+                    <td><button onClick={(e) => this.atualizarCardapio(cardapio)} className="pure-button pure-button-primary">Editar</button></td>
                   </tr>
                 );
-              })
+              }.bind(this))
             }
           </tbody>
         </table>
       </div>
     );
+  }
+
+  atualizarCardapio(cardapio){
+    PubSub.publish('cardapio-editar', cardapio);
   }
 
 }

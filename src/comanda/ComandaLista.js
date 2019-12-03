@@ -15,6 +15,7 @@ export default class ComandaLista extends Component {
           <thead>
             <tr>
               <th>Nome</th>
+              <th> </th>
             </tr>
           </thead>
           <tbody>
@@ -24,7 +25,6 @@ export default class ComandaLista extends Component {
                 return(
                   <tr>
                     <td>{comanda.nome}</td>
-
                     <td><a href={"/produtosPorComanda/"+comanda.comandaId}>Listar Produtos da Comanda</a></td>
                   </tr>
                 );
