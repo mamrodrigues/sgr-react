@@ -17,7 +17,7 @@ export default class PedidoBox extends Component {
           <h3>Cadastro de Pedidos</h3>
         </div>
 
-        <PedidoCadastro/>
+        <PedidoCadastro comandaId={this.props.match.params.comandaId}/>
         {
           (typeof this.state.produtos !== 'undefined' && this.state.produtos.length != 0) ? <ProdutoLista produtos={this.state.produtos}/> : null
         }
@@ -28,9 +28,10 @@ export default class PedidoBox extends Component {
   }
 
   componentDidMount(){
-    this.setState({comandaId:this.props.match.params.comandaId});
+    this.setState({ comandaId: this.props.match.params.comandaId }, () => {
+      this.carregaLista();
+    });
 
-    this.carregaLista();
     PubSub.subscribe('produtos-por-comanda-lista', function(topico){
       this.carregaLista();
     }.bind(this));
@@ -38,12 +39,35 @@ export default class PedidoBox extends Component {
 
   carregaLista(){
     $.ajax({
-        url:"http://localhost:8080/sgr/comandas/"+this.comandaId+"/produtos",
+        url:"http://localhost:8080/sgr/pedidos/comandas/"+this.state.comandaId,
         dataType: 'json',
         success:function(resposta){
-          this.setState({produtos:resposta});
+          this.setState({ produtos: resposta }, () => {
+            console.log("pedido", resposta);  
+            this.state.produtos.map(function(object){
+
+                console.log("pedido", object);
+                this.detalhaProduto(object);
+            }.bind(this));
+          });
         }.bind(this)
       }
     );
- }
+  }
+
+  detalhaProduto(produto){
+    $.ajax({
+        url:"http://localhost:8080/sgr/produtos/"+this.state.produtoId,
+        dataType: 'json',
+        success:function(resposta){
+
+          console.log(resposta);
+          // this.state.produtos.map(function(object){
+          //     this.detalhaProduto(object);
+          // }.bind(this));
+
+        }.bind(this)
+      }
+    );
+  }
 }

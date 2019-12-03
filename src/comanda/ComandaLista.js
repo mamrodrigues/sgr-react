@@ -6,8 +6,6 @@ export default class ComandaLista extends Component {
   constructor(){
     super();
     this.state = {comandas:[]};
-
-    this.detalharComanda = this.detalharComanda.bind(this);
   }
 
   render(){
@@ -22,11 +20,12 @@ export default class ComandaLista extends Component {
           <tbody>
             {
               this.props.comandas.map(function(comanda){
+                console.log(comanda);
                 return(
                   <tr>
                     <td>{comanda.nome}</td>
 
-                    <td><a href={"/produtosPorComanda/"+comanda.id}>Listar Produtos da Comanda</a></td>
+                    <td><a href={"/produtosPorComanda/"+comanda.comandaId}>Listar Produtos da Comanda</a></td>
                   </tr>
                 );
               })
@@ -36,17 +35,5 @@ export default class ComandaLista extends Component {
       </div>
     );
   }
-
-  detalharComanda(param){
-    window.alert(param)
-    // $.ajax({
-    //     url:"http://localhost:8080/sgr/comandas/",
-    //     dataType: 'json',
-    //     success:function(resposta){
-    //       this.setState({estabelecimentos:resposta});
-    //     }.bind(this)
-    //   }
-    // );
- }
 
 }

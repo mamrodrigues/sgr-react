@@ -3,7 +3,6 @@ import PubSub from 'pubsub-js';
 import $ from 'jquery';
 
 import InputCustomizado from '../componentes/InputCustomizado';
-import SelectCustomizado from '../componentes/SelectCustomizado';
 
 export default class ComandaCadastro extends Component {
 
@@ -13,8 +12,6 @@ export default class ComandaCadastro extends Component {
     this.cadastrar = this.cadastrar.bind(this);
 
     this.setNome = this.setNome.bind(this);
-    // this.setCardapio = this.setCardapio.bind(this);
-    // this.setProduto = this.setProduto.bind(this);
 
     $.ajax({
         url:"http://localhost:8080/sgr/cardapios",
@@ -27,29 +24,6 @@ export default class ComandaCadastro extends Component {
   }
 
   render(){
-    // <div className="pure-control-group">
-    //     <label htmlFor="cardapio">cardapios</label>
-    //
-    //     <select name="cardapio" id="cardapio" onChange={this.setCardapio}>
-    //         {
-    //           this.state.cardapios.map(function(object){
-    //               return <option value={object.id}>{object.cardapio}</option>
-    //           })
-    //         }
-    //     </select>
-    // </div>
-    //
-    // <div className="pure-control-group">
-    //     <label htmlFor="produto">Produto</label>
-    //
-    //     <select name="produto" id="produto" onChange={this.setProduto}>
-    //         {
-    //           this.state.produtos.map(function(object){
-    //               return <option value={object.id}>{object.produto}</option>
-    //           })
-    //         }
-    //     </select>
-    // </div>
     return (
       <div className="pure-form-aligned">
         <form className="pure-form" onSubmit={this.cadastrar} method="post">
@@ -89,22 +63,5 @@ export default class ComandaCadastro extends Component {
   setNome(evento){
     this.setState({nome:evento.target.value});
   }
-
-  // setCardapio(evento){
-  //   this.setState({cardapioId:evento.target.value});
-  //
-  //   $.ajax({
-  //       url:"http://localhost:8080/sgr/produtos"+this.state.cardapioId,
-  //       dataType: 'json',
-  //       success:function(resposta){
-  //         this.setState({produtos:resposta});
-  //       }.bind(this)
-  //     }
-  //   );
-  // }
-  //
-  // setProduto(evento){
-  //   this.setState({enderecoId:evento.target.value});
-  // }
 
 }

@@ -7,8 +7,8 @@ import SelectCustomizado from '../componentes/SelectCustomizado';
 
 export default class PedidoCadastro extends Component {
 
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
     this.state = {nome:'', cardapios:[], produtosCardapio:[], cardapioId:'', produtoId:''};
     this.cadastrar = this.cadastrar.bind(this);
 
@@ -19,19 +19,18 @@ export default class PedidoCadastro extends Component {
         url:"http://localhost:8080/sgr/cardapios",
         dataType: 'json',
         success:function(resposta){
-          this.setState({cardapios:resposta});
-
-          $.ajax({
-              url:"http://localhost:8080/sgr/cardapios/"+this.state.cardapios[0].cardapioId+"/produtos",
-              dataType: 'json',
-              success:function(resposta){
-                this.setState({produtosCardapio:resposta});
-              }.bind(this)
+          this.setState({ cardapios: resposta }, () => {
+            $.ajax({
+                url:"http://localhost:8080/sgr/cardapios/"+this.state.cardapios[0].cardapioId+"/produtos",
+                dataType: 'json',
+                success:function(resposta){
+                  this.setState({produtosCardapio:resposta});
+                }.bind(this)
+            });
           });
 
         }.bind(this)
     });
-
   }
 
   render(){
@@ -73,7 +72,6 @@ export default class PedidoCadastro extends Component {
     );
   }
 
-  //TODO Fazer o cadastro do pedido
   cadastrar(syntheticEvent){
     syntheticEvent.preventDefault();
 
@@ -85,24 +83,32 @@ export default class PedidoCadastro extends Component {
       this.state.produtoId = this.state.produtosCardapio[0].produtoId;
     }
 
-    console.log(this.state.cardapioId);
-    console.log(this.state.produtoId);
+    console.log("cardapioId", this.state.cardapioId);
+    console.log("produtoId", this.state.produtoId);
+    console.log("comandaId", this.state.comandaId);
 
-    // $.ajax({
-    //     url:"http://localhost:8080/sgr/comandas",
-    //     dataType: 'json',
-    //     contentType: "application/json; charset=utf-8",
-    //     type: 'post',
-    //     data: JSON.stringify({nome:this.state.nome, produtoId:this.state.produto}),
-    //     success:function(resposta){
-    //       this.setState({nome:'', cnpj:''});
-    //       PubSub.publish('produtos-por-comanda-lista');
-    //     }.bind(this),
-    //     error: function(error){
-    //       console.log(error);
-    //     }
-    //   }
-    // );
+    $.ajax({
+        url:"http://localhost:8080/sgr/pedidos/",
+        dataType: 'json',
+        contentType: "application/json; charset=utf-8",
+        type: 'post',
+        data: JSON.stringify({
+          comanda:{
+            comandaId: this.state.comandaId
+          },
+          produto:{
+            produtoId: this.state.produtoId
+          }
+        }),
+        success:function(resposta){
+          this.setState({nome:'', cnpj:''});
+          PubSub.publish('produtos-por-comanda-lista');
+        }.bind(this),
+        error: function(error){
+          console.log(error);
+        }
+      }
+    );
   }
 
   setNome(evento){
@@ -121,6 +127,12 @@ export default class PedidoCadastro extends Component {
         }.bind(this)
       }
     );
+  }
+
+  componentDidMount(){
+    this.setState({ comandaId: this.props.comandaId }, () => {
+      console.log('comandaId', this.state.comandaId);
+    });
   }
 
   setProduto(evento){
