@@ -9,7 +9,17 @@ export default class FuncionarioCadastro extends Component {
 
   constructor(){
     super();
-    this.state = {mensagemSucesso:'', id:'', nome:'', cpf:'', dataNascimento:'', estabelecimentos:[], estabelecimentoId:''};
+    this.state = {
+      mensagemSucesso:'',
+      id:'',
+      nome:'',
+      cpf:'',
+      dataNascimento:'',
+      estabelecimentos:[],
+      estabelecimentoId:'',
+      isFormValido:false
+    };
+
     this.cadastrar = this.cadastrar.bind(this);
     this.setNome = this.setNome.bind(this);
     this.setCpf = this.setCpf.bind(this);
@@ -26,12 +36,18 @@ export default class FuncionarioCadastro extends Component {
     );
 
     PubSub.subscribe('funcionario-editar', function(chave, funcionario){
+
+      var data = new Date(funcionario.dataNascimento);
+      var dataFormatada = this.dataFormatada(data);
+
       this.setState(
         {
           id:funcionario.id,
           nome:funcionario.nome,
           cpf:funcionario.cpf,
-          dataNascimento:funcionario.dataNascimento
+          dataNascimento:dataFormatada
+        }, () => {
+          this.validateForm();
         });
     }.bind(this));
   }
@@ -42,13 +58,15 @@ export default class FuncionarioCadastro extends Component {
         <form className="pure-form pure-form-aligned" onSubmit={this.cadastrar} method="post">
 
           <InputCustomizado id="nome" type="text" name="nome" value={this.state.nome}
-          onChange={this.setNome} label="Nome" mensagemErro="Nome Obrigatório"/>
+          onChange={this.setNome} label="Nome" mensagemErro="Nome Obrigatório" minlength="5"/>
 
           <InputCustomizado id="cpf" type="text" name="cpf" value={this.state.cpf}
-          onChange={this.setCpf} label="CPF" mensagemErro="CPF Obrigatório"/>
+          onChange={this.setCpf} label="CPF" mensagemErro="CPF Obrigatório" maxlength="14" minlength="14"/>
 
-          <InputCustomizado id="dataNascimento" type="date" name="dataNascimento" value={this.state.dataNascimento}
-          onChange={this.setDataNascimento} label="Data de Nascimento" mensagemErro="Data de Nascimento Obrigatório"/>
+          <InputCustomizado id="dataNascimento" type="date" name="dataNascimento"
+            value={this.state.dataNascimento} onChange={this.setDataNascimento}
+            label="Data de Nascimento" mensagemErro="Data de Nascimento Obrigatório"
+            minlength="10"/>
 
           <div className="pure-control-group">
               <label htmlFor="estabelecimento">Estabelecimento</label>
@@ -64,7 +82,7 @@ export default class FuncionarioCadastro extends Component {
 
           <div className="pure-control-group">
             <label></label>
-            <button type="submit" className="pure-button pure-button-primary">Gravar</button>
+            <button disabled={!this.state.isFormValido} type="submit" className="pure-button pure-button-primary">Gravar</button>
           </div>
         </form>
 
@@ -80,6 +98,9 @@ export default class FuncionarioCadastro extends Component {
       this.state.estabelecimentoId = this.state.estabelecimentos[0].estabelecimentoId;
     }
 
+    var val = this.state.dataNascimento.split('-');
+    var dataNascimento = new Date(val[0], val[1]-1, val[2]);
+
     if(this.state.id != ''){
       $.ajax({
           url:"http://localhost:8080/sgr/funcionarios",
@@ -90,12 +111,14 @@ export default class FuncionarioCadastro extends Component {
             id:this.state.id,
             nome:this.state.nome,
             cpf:this.state.cpf,
+            dataNascimento:dataNascimento,
             estabelecimento: {
               estabelecimentoId: this.state.estabelecimentoId
             }
           }),
           success:function(resposta){
             this.setState({
+              id:'',
               nome:'',
               cpf:'',
               dataNascimento:'',
@@ -118,12 +141,14 @@ export default class FuncionarioCadastro extends Component {
           data: JSON.stringify({
             nome:this.state.nome,
             cpf:this.state.cpf,
+            dataNascimento:dataNascimento,
             estabelecimento: {
               estabelecimentoId: this.state.estabelecimentoId
             }
           }),
           success:function(resposta){
             this.setState({
+              id:'',
               nome:'',
               cpf:'',
               dataNascimento:'',
@@ -141,21 +166,58 @@ export default class FuncionarioCadastro extends Component {
   }
 
   setNome(evento){
-    this.setState({nome:evento.target.value});
+    this.setState({nome:evento.target.value}, ()=>{
+      this.validateForm();
+    });
   }
 
   setCpf(evento){
-    this.setState({cpf:evento.target.value});
+    this.validaCPF(evento.target.value);
   }
 
   setDataNascimento(evento){
-    this.setState({dataNascimento:evento.target.value});
+    this.setState({dataNascimento:evento.target.value}, () => {
+      this.validateForm();
+    });
   }
 
   setEstabelecimento(evento){
     this.setState({ estabelecimentoId: evento.target.value }, () => {
-      console.log('estabelecimentoId', this.state.estabelecimentoId);
+      this.validateForm();
     });
+  }
+
+  validaCPF(cpf){
+    var value = cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+    this.setState({cpf:value}, () => {
+      this.validateForm();
+    });
+  }
+
+  validateForm(){
+    if (this.state.nome && this.state.nome.length > 5 &&
+          this.state.cpf && this.state.cpf.length === 14 &&
+          this.state.dataNascimento && this.state.dataNascimento.length === 10) {
+
+        this.setState({isFormValido:true}, () => {
+          console.log('isFormValido', this.state.isFormValido);
+        });
+
+    } else {
+      this.setState({isFormValido:false}, () => {
+        console.log('isFormValido', this.state.isFormValido);
+      });
+    }
+  }
+
+  dataFormatada(dateObject){
+    var data = dateObject,
+        dia  = data.getDate().toString(),
+        diaF = (dia.length == 1) ? '0'+dia : dia,
+        mes  = (data.getMonth()+1).toString(), //+1 pois no getMonth Janeiro começa com zero.
+        mesF = (mes.length == 1) ? '0'+mes : mes,
+        anoF = data.getFullYear();
+    return anoF+"-"+mesF+"-"+diaF;
   }
 
 }

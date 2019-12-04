@@ -21,8 +21,6 @@ export default class PedidoBox extends Component {
         {
           (typeof this.state.produtos !== 'undefined' && this.state.produtos.length != 0) ? <ProdutoLista produtos={this.state.produtos}/> : null
         }
-
-
       </div>
     );
   }
@@ -43,7 +41,7 @@ export default class PedidoBox extends Component {
         dataType: 'json',
         success:function(resposta){
           this.setState({ produtos: resposta }, () => {
-            console.log("pedido", resposta);  
+            console.log("pedido", resposta);
             this.state.produtos.map(function(object){
 
                 console.log("pedido", object);
@@ -55,19 +53,4 @@ export default class PedidoBox extends Component {
     );
   }
 
-  detalhaProduto(produto){
-    $.ajax({
-        url:"http://localhost:8080/sgr/produtos/"+this.state.produtoId,
-        dataType: 'json',
-        success:function(resposta){
-
-          console.log(resposta);
-          // this.state.produtos.map(function(object){
-          //     this.detalhaProduto(object);
-          // }.bind(this));
-
-        }.bind(this)
-      }
-    );
-  }
 }

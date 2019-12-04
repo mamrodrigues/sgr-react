@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import PubSub from 'pubsub-js';
 
 export default class ComandaLista extends Component {
 
@@ -21,7 +20,6 @@ export default class ComandaLista extends Component {
           <tbody>
             {
               this.props.comandas.map(function(comanda){
-                console.log(comanda);
                 return(
                   <tr>
                     <td>{comanda.nome}</td>

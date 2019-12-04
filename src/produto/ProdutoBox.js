@@ -9,7 +9,7 @@ export default class ProdutoBox extends Component {
     super();
     this.state = {produtos:[]};
 
-    
+
   }
 
   render(){

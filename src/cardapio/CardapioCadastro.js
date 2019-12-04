@@ -9,7 +9,16 @@ export default class CardapioCadastro extends Component {
 
   constructor(){
     super();
-    this.state = {mensagemSucesso:'', cardapioId:'', nome:'', descricao:'', estabelecimentos:[], estabelecimentoId:''};
+    this.state = {
+      mensagemSucesso:'',
+      cardapioId:'',
+      nome:'',
+      descricao:'',
+      estabelecimentos:[],
+      estabelecimentoId:'',
+      isFormValido:false
+    };
+
     this.cadastrar = this.cadastrar.bind(this);
     this.setNome = this.setNome.bind(this);
     this.setDescricao = this.setDescricao.bind(this);
@@ -30,6 +39,8 @@ export default class CardapioCadastro extends Component {
           cardapioId:cardapio.cardapioId,
           nome:cardapio.nome,
           descricao:cardapio.descricao
+        }, () => {
+          this.validateForm();
         });
     }.bind(this));
   }
@@ -40,10 +51,10 @@ export default class CardapioCadastro extends Component {
         <form className="pure-form pure-form-aligned" onSubmit={this.cadastrar} method="post">
 
           <InputCustomizado id="nome" type="text" name="nome" value={this.state.nome}
-            onChange={this.setNome} label="Nome" mensagemErro="Nome Obrigatório"/>
+            onChange={this.setNome} label="Nome" mensagemErro="Nome Obrigatório" minlength="5"/>
 
           <InputCustomizado id="descricao" type="text" name="descricao" value={this.state.descricao}
-            onChange={this.setDescricao} label="Descrição" mensagemErro="Descrição Obrigatório"/>
+            onChange={this.setDescricao} label="Descrição" mensagemErro="Descrição Obrigatório" minlength="5"/>
 
           <div className="pure-control-group">
               <label htmlFor="estabelecimento">Estabelecimento</label>
@@ -59,7 +70,7 @@ export default class CardapioCadastro extends Component {
 
           <div className="pure-control-group">
             <label></label>
-            <button type="submit" className="pure-button pure-button-primary">Gravar</button>
+            <button disabled={!this.state.isFormValido} type="submit" className="pure-button pure-button-primary" >Gravar</button>
           </div>
         </form>
 
@@ -139,17 +150,36 @@ export default class CardapioCadastro extends Component {
   }
 
   setNome(evento){
-    this.setState({nome:evento.target.value});
+    this.setState({nome:evento.target.value}, () => {
+      this.validateForm();
+    });
   }
 
   setDescricao(evento){
-    this.setState({descricao:evento.target.value});
+    this.setState({descricao:evento.target.value}, () => {
+      this.validateForm();
+    });
   }
 
   setEstabelecimento(evento){
     this.setState({ estabelecimentoId: evento.target.value }, () => {
-      console.log('estabelecimentoId', this.state.estabelecimentoId);
+      this.validateForm();
     });
+  }
+
+  validateForm(){
+    if (this.state.nome && this.state.nome.length > 5 &&
+          this.state.descricao && this.state.descricao.length > 5) {
+
+        this.setState({isFormValido:true}, () => {
+          console.log('isFormValido', this.state.isFormValido);
+        });
+
+    } else {
+      this.setState({isFormValido:false}, () => {
+        console.log('isFormValido', this.state.isFormValido);
+      });
+    }
   }
 
 }

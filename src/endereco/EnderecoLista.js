@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import PubSub from 'pubsub-js';
 
 export default class EnderecoLista extends Component {
 
