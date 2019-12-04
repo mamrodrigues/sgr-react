@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PubSub from 'pubsub-js';
 
 export default class ComandaLista extends Component {
 
@@ -15,6 +16,7 @@ export default class ComandaLista extends Component {
             <tr>
               <th>Nome</th>
               <th> </th>
+              <th> </th>
             </tr>
           </thead>
           <tbody>
@@ -23,15 +25,20 @@ export default class ComandaLista extends Component {
                 return(
                   <tr>
                     <td>{comanda.nome}</td>
-                    <td><a href={"/produtosPorComanda/"+comanda.comandaId}>Listar Produtos da Comanda</a></td>
+                    <td><button onClick={(e) => this.detalharComanda(comanda)} className="pure-button pure-button-primary">Detalhar</button></td>
+                    <td><a href={"/produtosPorComanda/"+comanda.comandaId}>FAZER PEDIDO</a></td>
                   </tr>
-                );
-              })
+                )
+              }.bind(this))
             }
           </tbody>
         </table>
       </div>
     );
+  }
+
+  detalharComanda(comanda){
+    PubSub.publish('comanda-editar', comanda);
   }
 
 }

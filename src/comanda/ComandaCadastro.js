@@ -8,7 +8,7 @@ export default class ComandaCadastro extends Component {
 
   constructor(){
     super();
-    this.state = {nome:'', cardapios:[], produtos:[]};
+    this.state = {comandaId:'', nome:'', cardapios:[], produtos:[]};
     this.cadastrar = this.cadastrar.bind(this);
 
     this.setNome = this.setNome.bind(this);
@@ -21,6 +21,17 @@ export default class ComandaCadastro extends Component {
         }.bind(this)
       }
     );
+
+    PubSub.subscribe('comanda-editar', function(chave, comanda){
+      console.log('comanda', comanda);
+      this.setState(
+        {
+          comandaId:comanda.comandaId,
+          nome:comanda.nome
+        }, () => {
+          this.validateForm();
+        });
+    }.bind(this));
   }
 
   render(){
@@ -28,11 +39,13 @@ export default class ComandaCadastro extends Component {
       <div className="pure-form-aligned">
         <form className="pure-form" onSubmit={this.cadastrar} method="post">
 
-          <InputCustomizado className="pure-control-group" id="nome" type="text" name="nome" value={this.state.nome} onChange={this.setNome} label="Nome"/>
+          <InputCustomizado className="pure-control-group" id="nome" type="text"
+            name="nome" value={this.state.nome} onChange={this.setNome} label="Nome"
+            minlength="5" maxlength="20"/>
 
           <div className="pure-control-group">
             <label></label>
-            <button type="submit" className="pure-button pure-button-primary">Abrir Comanda</button>
+            <button disabled={!this.state.isFormValido} type="submit" className="pure-button pure-button-primary">Abrir Comanda</button>
           </div>
         </form>
 
@@ -43,25 +56,79 @@ export default class ComandaCadastro extends Component {
   cadastrar(syntheticEvent){
     syntheticEvent.preventDefault();
 
-    $.ajax({
-        url:"http://localhost:8080/sgr/comandas",
-        dataType: 'json',
-        contentType: "application/json; charset=utf-8",
-        type: 'post',
-        data: JSON.stringify({nome:this.state.nome, produtoId:this.state.produto}),
-        success:function(resposta){
-          this.setState({nome:'', cnpj:''});
-          PubSub.publish('comanda-lista');
-        }.bind(this),
-        error: function(error){
-          console.log(error);
+    if(this.state.comandaId != ''){
+      $.ajax({
+          url:"http://localhost:8080/sgr/comandas",
+          dataType: 'json',
+          contentType: "application/json; charset=utf-8",
+          type: 'post',
+          data: JSON.stringify(
+            {
+              comandaId:this.state.comandaId,
+              nome:this.state.nome,
+              produtoId:this.state.produto
+            }
+          ),
+          success:function(resposta){
+            this.setState({
+              comandaId:'',
+              nome:'',
+              cnpj:''
+            });
+            PubSub.publish('comanda-lista');
+          }.bind(this),
+          error: function(error){
+            console.log(error);
+          }
         }
-      }
-    );
+      );
+
+    } else {
+      $.ajax({
+          url:"http://localhost:8080/sgr/comandas",
+          dataType: 'json',
+          contentType: "application/json; charset=utf-8",
+          type: 'post',
+          data: JSON.stringify(
+            {
+              nome:this.state.nome,
+              produtoId:this.state.produto
+            }
+          ),
+          success:function(resposta){
+            this.setState({
+              comandaId:'',
+              nome:'',
+              cnpj:''
+            });
+            PubSub.publish('comanda-lista');
+          }.bind(this),
+          error: function(error){
+            console.log(error);
+          }
+        }
+      );
+    }
+
   }
 
   setNome(evento){
-    this.setState({nome:evento.target.value});
+    this.setState({nome:evento.target.value}, () =>{
+      this.validateForm();
+    });
+  }
+
+  validateForm(){
+    if (this.state.nome && this.state.nome.length > 5) {
+        this.setState({isFormValido:true}, () => {
+          console.log('isFormValido', this.state.isFormValido);
+        });
+
+    } else {
+      this.setState({isFormValido:false}, () => {
+        console.log('isFormValido', this.state.isFormValido);
+      });
+    }
   }
 
 }
