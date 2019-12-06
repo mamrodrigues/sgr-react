@@ -38,6 +38,7 @@ export default class ComandaBox extends Component {
         url:"http://localhost:8080/sgr/comandas",
         dataType: 'json',
         success:function(resposta){
+          console.log(resposta);
           this.setState({comandas:resposta});
         }.bind(this)
       }

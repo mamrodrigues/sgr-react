@@ -29,7 +29,7 @@ export default class ProdutoLista extends Component {
                   <tr>
                     <td>{produto.nome}</td>
                     <td>{produto.descricao}</td>
-                    <td>{produto.valor}</td>
+                    <td>R$ {produto.valor},00</td>
                     <td><button onClick={(e) => this.atualizarProduto(produto)} className="pure-button pure-button-primary">Detalhar</button></td>
                     <td><button onClick={(e) => this.excluirProduto(produto)} className="pure-button pure-button-primary">Excluir</button></td>
                   </tr>

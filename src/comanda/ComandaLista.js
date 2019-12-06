@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PubSub from 'pubsub-js';
+import $ from 'jquery';
 
 export default class ComandaLista extends Component {
 
@@ -17,6 +18,7 @@ export default class ComandaLista extends Component {
               <th>Nome</th>
               <th> </th>
               <th> </th>
+              <th> </th>
             </tr>
           </thead>
           <tbody>
@@ -25,8 +27,25 @@ export default class ComandaLista extends Component {
                 return(
                   <tr>
                     <td>{comanda.nome}</td>
-                    <td><button onClick={(e) => this.detalharComanda(comanda)} className="pure-button pure-button-primary">Detalhar</button></td>
-                    <td><a href={"/produtosPorComanda/"+comanda.comandaId}>FAZER PEDIDO</a></td>
+                    <td>
+                      <button onClick={(e) => this.detalharComanda(comanda)}
+                        className="pure-button pure-button-primary">
+                        Detalhar
+                      </button>
+                    </td>
+
+                    <td>
+                        <button disabled={comanda.fechada} onClick={(e) => this.fecharComanda(comanda)}
+                          className="pure-button pure-button-primary">
+                          Fechar Comanda
+                        </button>
+                    </td>
+                    <td>
+                      { !comanda.fechada ?
+                        <a href={"/produtosPorComanda/"+comanda.comandaId}>FAZER PEDIDO</a>
+                        : 'Comanda Fechada' }
+                    </td>
+
                   </tr>
                 )
               }.bind(this))
@@ -41,4 +60,27 @@ export default class ComandaLista extends Component {
     PubSub.publish('comanda-editar', comanda);
   }
 
+  fecharComanda(comanda){
+    comanda.fechada = true;
+    $.ajax({
+        url:"http://localhost:8080/sgr/comandas",
+        dataType: 'json',
+        contentType: "application/json; charset=utf-8",
+        type: 'post',
+        data: JSON.stringify(
+          {
+            comandaId: comanda.comandaId,
+            nome:comanda.nome,
+            fechada:comanda.fechada
+          }
+        ),
+        success:function(resposta){
+          PubSub.publish('comanda-lista');
+        }.bind(this),
+        error: function(error){
+          console.log(error);
+        }
+      }
+    );
+  }
 }

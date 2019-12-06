@@ -47,6 +47,7 @@ export default class PedidoBox extends Component {
         url:"http://localhost:8080/sgr/pedidos/comandas/"+this.state.comandaId,
         dataType: 'json',
         success:function(pedidos){
+          console.log('pedidos', pedidos)
           this.setState({ pedidos: pedidos }, () => {
             this.detalhaPedido();
           });
@@ -60,7 +61,7 @@ export default class PedidoBox extends Component {
         url:"http://localhost:8080/sgr/comandas/"+this.state.comandaId+"/produtos",
         dataType: 'json',
         success:function(produtos){
-          console.log('produtos', produtos)
+          console.log('produtos', produtos);
           this.setState({ produtos: produtos }, () => {
             //console.log(produtos, this.state.produtos);
           });

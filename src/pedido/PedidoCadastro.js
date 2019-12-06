@@ -9,11 +9,12 @@ export default class PedidoCadastro extends Component {
 
   constructor(props){
     super(props);
-    this.state = {nome:'', cardapios:[], produtosCardapio:[], cardapioId:'', produtoId:''};
+    this.state = {nome:'', cardapios:[], observacao:'', produtosCardapio:[], cardapioId:'', produtoId:''};
     this.cadastrar = this.cadastrar.bind(this);
 
     this.setCardapio = this.setCardapio.bind(this);
     this.setProduto = this.setProduto.bind(this);
+    this.setObservacao = this.setObservacao.bind(this);
 
     $.ajax({
         url:"http://localhost:8080/sgr/cardapios",
@@ -31,6 +32,7 @@ export default class PedidoCadastro extends Component {
 
         }.bind(this)
     });
+
   }
 
   render(){
@@ -61,6 +63,9 @@ export default class PedidoCadastro extends Component {
                 }
             </select>
         </div>
+
+        <InputCustomizado className="pure-control-group" id="observacao" type="text" name="observacao" value={this.state.observacao}
+          onChange={this.setObservacao} label="Observação"/>
 
           <div className="pure-control-group">
             <label></label>
@@ -98,10 +103,12 @@ export default class PedidoCadastro extends Component {
           },
           produto:{
             produtoId: this.state.produtoId
-          }
+          },
+          observacao: this.state.observacao
         }),
         success:function(resposta){
           this.setState({nome:'', cnpj:''});
+          
           PubSub.publish('produtos-por-comanda-lista');
         }.bind(this),
         error: function(error){
@@ -111,8 +118,9 @@ export default class PedidoCadastro extends Component {
     );
   }
 
-  setNome(evento){
-    this.setState({nome:evento.target.value});
+  setObservacao(evento){
+    this.setState({observacao:evento.target.value}, () => {
+    });
   }
 
   setCardapio(evento){
